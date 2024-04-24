@@ -1,0 +1,27 @@
+.hero-container{
+    color: black;
+    padding-top: 8rem;
+}
+
+.hero-content{
+    width: 50%;
+    margin: 0 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-content-title{
+    display: flex;
+    flex-direction: column;
+    font-size: 50px;
+    color: rgb(182, 9, 9);
+    margin-bottom: 3rem;
+}
+
+.hero-content-title span{
+    color: rgba(182, 9, 9, 0.678);
+}
+
+.hero-content-description{
+    font-size: 20px;
+}
