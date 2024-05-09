@@ -2,3 +2,10 @@
     display: flex;
     flex-direction: column;
 }
+
+.section-title{
+    color: #66101F;
+    font-size: 40px;
+    font-style: italic;
+    margin-bottom: 3rem;
+}

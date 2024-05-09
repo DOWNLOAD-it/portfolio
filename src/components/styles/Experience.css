@@ -1,0 +1,19 @@
+.experience-container {
+  height: max-content;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-right: 20px;
+  margin-bottom: 2rem;
+}
+
+.experience-card {
+  /* font-size: 28px; */
+  color: #66101f;
+  border: #66101ebd dashed 5px;
+  border-radius: 15px;
+  padding: 20px;
+  width: 55%;
+  height: 160px;
+  margin-bottom: 1rem;
+}

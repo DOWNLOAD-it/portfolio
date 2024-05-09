@@ -6,6 +6,7 @@ import { faReact, faLaravel } from "@fortawesome/free-brands-svg-icons";
 const Projects = () => {
   return (
     <div className="projects-container">
+      <h1 className="section-title">My latest projects</h1>
       <div className="project-card">
         <div className="card-content">
           <h1 className="project-name">Best gaming site ever</h1>
