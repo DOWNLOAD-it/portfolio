@@ -1,0 +1,32 @@
+.hero-container {
+  padding-top: 8rem;
+  height: 652px;
+  padding-bottom: 11rem;
+  background-image: url("../images/background/1.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.hero-content {
+  width: 50%;
+  margin: 0 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-content-title {
+  display: flex;
+  flex-direction: column;
+  font-size: 50px;
+  color: #66101f;
+  margin-bottom: 3rem;
+}
+
+.hero-content-title span {
+  color: #66101ebd;
+}
+
+.hero-content-description {
+  font-size: 20px;
+}
