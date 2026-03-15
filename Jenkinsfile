@@ -23,9 +23,9 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    echo "Building Docker image: ${DOCKER_IMAGE}"
-                    // Multi-stage build using your Node 20.12.1 Dockerfile
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    echo "Building Docker image with BuildKit: ${DOCKER_IMAGE}"
+                    // Adding DOCKER_BUILDKIT=1 before the command
+                    sh "DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE} ."
                 }
             }
         }
