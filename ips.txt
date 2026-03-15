@@ -1,5 +1,0 @@
-jenkins_ip = "13.39.47.66"
-master_private_ip = "172.31.32.84"
-master_public_ip = "13.39.110.249"
-worker_private_ip = "172.31.38.5"
-worker_public_ip = "15.188.119.11"
