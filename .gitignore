@@ -10,9 +10,27 @@
 
 # production
 /build
+/dist
+
+# Infrastructure (New)
+# -----------------------------
+# Ansible
+/ansible/
+*.retry
+hosts.ini
+inventory.ini
+
+# Terraform
+.terraform/
+*.tf
+*.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
