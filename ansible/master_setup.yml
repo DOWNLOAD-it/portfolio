@@ -1,0 +1,34 @@
+---
+- name: Configure K8s Master Node (Local)
+  hosts: master
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Install K3s Server
+      shell: |
+        curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--write-kubeconfig-mode 644 --disable traefik" sh -
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Ensure ansible directory exists
+      file:
+        path: /home/admin/ansible
+        state: directory
+        owner: admin
+        mode: "0755"
+
+    - name: Get K3s Token from Master
+      slurp:
+        src: /var/lib/rancher/k3s/server/node-token
+      register: node_token
+
+    - name: Save token to a file for workers to read
+      copy:
+        content: "{{ node_token.content | b64decode | trim }}"
+        dest: /home/admin/ansible/k3s_token.txt
+        owner: admin
+        mode: "0644"
+
+    - name: Show Token (Decoded)
+      debug:
+        msg: "Your K3s Token is: {{ node_token.content | b64decode | trim }}"

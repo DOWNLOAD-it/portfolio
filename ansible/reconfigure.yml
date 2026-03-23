@@ -1,0 +1,56 @@
+---
+# ==========================================
+# PLAY 1: MASTER NODE TASKS
+# ==========================================
+- name: Fetch Token from Master Node
+  hosts: master
+  become: yes
+  tasks:
+    - name: Get K3s Join Token from Master
+      slurp:
+        src: /var/lib/rancher/k3s/server/node-token
+      register: node_token_encoded
+
+    - name: Set Token fact for other plays to use
+      set_fact:
+        k3s_token: "{{ node_token_encoded.content | b64decode | trim }}"
+      delegate_to: localhost
+      delegate_facts: true
+
+# ==========================================
+# PLAY 2: WORKER NODE TASKS
+# ==========================================
+- name: Reconfigure Worker Connection
+  hosts: worker
+  become: yes
+  tasks:
+    - name: Reconfigure Worker to Master Private IP
+      copy:
+        dest: /etc/systemd/system/k3s-agent.service.env
+        # master_private_ip is automatically pulled from hosts.ini [all:vars]
+        content: |
+          K3S_URL=https://{{ master_private_ip }}:6443
+          K3S_TOKEN={{ hostvars['localhost']['k3s_token'] }}
+      notify: restart k3s-agent
+
+  handlers:
+    - name: restart k3s-agent
+      systemd:
+        name: k3s-agent
+        state: restarted
+        daemon_reload: yes
+
+# ==========================================
+# PLAY 3: JENKINS SERVER TASKS
+# ==========================================
+- name: Reconfigure Jenkins Kubernetes Access
+  hosts: jenkins
+  become: yes
+  vars:
+    jenkins_kubeconfig_path: "/var/lib/jenkins/.kube/config"
+  tasks:
+    - name: Update Jenkins Kubeconfig with New Master IP
+      replace:
+        path: "{{ jenkins_kubeconfig_path }}"
+        regexp: "server: https://.*:6443"
+        replace: "server: https://{{ master_private_ip }}:6443"

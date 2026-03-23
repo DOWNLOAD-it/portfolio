@@ -15,15 +15,15 @@
 # Infrastructure (New)
 # -----------------------------
 # Ansible
-/ansible/
+# /ansible/
 *.retry
 hosts.ini
 inventory.ini
 
 # Terraform
-/terraform
+# /terraform
 .terraform/
-*.tf
+# *.tf
 *.tfvars
 *.tfstate
 *.tfstate.backup

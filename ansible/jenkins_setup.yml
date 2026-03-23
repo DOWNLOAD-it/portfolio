@@ -1,0 +1,160 @@
+---
+- name: Clean and Configure Jenkins Server with K8s Access
+  hosts: jenkins
+  become: yes
+  gather_facts: yes
+
+  vars:
+    # master_private_ip is now pulled automatically from hosts.ini [all:vars]
+    jenkins_init_pwd_path: "/var/lib/jenkins/secrets/initialAdminPassword"
+
+  tasks:
+    # -----------------------------
+    # 1. CLEANUP
+    # -----------------------------
+    - name: Wipe existing Jenkins, Java, and Apt leftovers
+      shell: |
+        apt-get purge -y jenkins openjdk* || true
+        apt-get autoremove -y
+        apt-get clean
+        rm -rf /var/lib/jenkins
+        rm -rf /etc/default/jenkins
+        rm -f /etc/apt/sources.list.d/jenkins.list
+        rm -f /etc/apt/keyrings/jenkins.gpg
+        rm -rf /home/admin/.kube
+        rm -rf /var/lib/jenkins/.kube
+      ignore_errors: yes
+
+    - name: Kill any hanging apt processes
+      shell: "killall apt apt-get || true"
+      ignore_errors: yes
+
+    # -----------------------------
+    # 2. INSTALL TOOLS (Docker, Java, Kubectl)
+    # -----------------------------
+    - name: Install system dependencies
+      apt:
+        name: [curl, gnupg, fontconfig, openjdk-17-jre-headless, docker.io]
+        state: present
+        update_cache: yes
+
+    - name: Install kubectl binary
+      shell: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      args:
+        creates: /usr/local/bin/kubectl
+
+    # -----------------------------
+    # 3. JENKINS INSTALLATION
+    # -----------------------------
+    - name: Create keyring directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    # 2. JENKINS REPOSITORY SETUP
+    - name: Download latest Jenkins 2026 GPG key
+      ansible.builtin.get_url:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+        dest: /etc/apt/keyrings/jenkins.asc
+        mode: "0644"
+        force: yes # Overwrites the old/broken key if it exists
+
+    - name: Add Jenkins apt repository (LTS)
+      ansible.builtin.apt_repository:
+        # Crucial: This path must exactly match the 'dest' above
+        repo: "deb [signed-by=/etc/apt/keyrings/jenkins.asc] https://pkg.jenkins.io/debian-stable binary/"
+        state: present
+        filename: jenkins
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+        update_cache: yes
+
+    # -----------------------------
+    # 4. KUBECONFIG AUTHORIZATION
+    # -----------------------------
+    - name: Create Jenkins .kube directory
+      file:
+        path: /var/lib/jenkins/.kube
+        state: directory
+        owner: jenkins
+        group: jenkins
+        mode: "0700"
+
+    - name: Fetch K3s config from Master node
+      slurp:
+        src: /etc/rancher/k3s/k3s.yaml
+      register: k3s_config
+      delegate_to: master_node # Uses the name from your hosts.ini
+
+    - name: Deploy K3s config to Jenkins
+      copy:
+        content: "{{ k3s_config.content | b64decode }}"
+        dest: /var/lib/jenkins/.kube/config
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+
+    - name: Update K3s config to use Master Private IP
+      replace:
+        path: /var/lib/jenkins/.kube/config
+        regexp: "127.0.0.1"
+        replace: "{{ master_private_ip }}"
+
+    # -----------------------------
+    # 5. PERMISSIONS & RAM
+    # -----------------------------
+    - name: Add Jenkins to Docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
+    - name: Limit Jenkins RAM usage
+      lineinfile:
+        path: /etc/default/jenkins
+        regexp: "^JAVA_ARGS="
+        line: 'JAVA_ARGS="-Xmx512m -Djava.awt.headless=true"'
+      notify: Restart Jenkins
+
+    - name: Ensure services are started
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop: [docker, jenkins]
+
+    # -----------------------------
+    # 6. RETRIEVE UNLOCK PASSWORD
+    # -----------------------------
+    - name: Wait for Jenkins to generate the admin password
+      wait_for:
+        path: "{{ jenkins_init_pwd_path }}"
+        state: present
+        timeout: 60
+
+    - name: Read Jenkins admin password
+      slurp:
+        src: "{{ jenkins_init_pwd_path }}"
+      register: admin_password
+
+    - name: Display Jenkins Initial Admin Password
+      debug:
+        msg:
+          - "#########################################################"
+          - "JENKINS INSTALLATION COMPLETE"
+          - "Access URL: http://{{ ansible_host }}:8080"
+          - "Admin Password: {{ admin_password.content | b64decode }}"
+          - "#########################################################"
+
+  handlers:
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted

@@ -1,0 +1,43 @@
+---
+- name: Configure K8s Worker Node
+  hosts: worker
+  become: yes
+  gather_facts: yes
+
+  vars:
+    # 1. Pull from [all:vars] in hosts.ini
+    # 2. If undefined, look for the 'master_node' host address
+    # 3. Fallback to 'master_private_ip' if that's what you named it in Terraform
+    k3s_master_ip: "{{ master_private_ip | default(hostvars['master_node']['ansible_host']) }}"
+
+  tasks:
+    # 1. FETCH TOKEN FROM MASTER
+    - name: Read token from Master node
+      set_fact:
+        k3s_token: "{{ lookup('file', '/home/admin/ansible/k3s_token.txt') }}"
+      delegate_to: localhost
+
+    # 2. INSTALL DEPENDENCIES
+    - name: Install dependencies
+      apt:
+        name: [curl, docker.io]
+        update_cache: yes
+        state: present
+
+    # 3. JOIN THE CLUSTER
+    - name: Join K3s Cluster as Worker
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_master_ip }}:6443 \
+        K3S_TOKEN={{ k3s_token }} sh -
+      args:
+        creates: /usr/local/bin/k3s-agent
+
+    # 4. CONFIGURE RUNTIME
+    - name: Ensure Docker and K3s-Agent are running
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - docker
+        - k3s-agent
