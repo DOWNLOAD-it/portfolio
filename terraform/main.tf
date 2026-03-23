@@ -165,19 +165,19 @@ resource "null_resource" "initial_setup" {
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
 
   # 2. Upload all Ansible Playbooks (Note the trailing slash!)
   provisioner "file" {
-    source      = "C:/Users/dodso/Desktop/Cloud app/ansible/" 
+    source      = "../ansible/" 
     destination = "/home/admin/ansible/"
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
@@ -189,19 +189,19 @@ resource "null_resource" "initial_setup" {
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
 
   # 4. Upload .pem key and Execute
   provisioner "file" {
-    source      = "C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem"
+    source      = "../cloud-project-key.pem"
     destination = "/home/admin/cloud-project-key.pem"
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
@@ -219,7 +219,7 @@ resource "null_resource" "initial_setup" {
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
@@ -242,7 +242,7 @@ resource "null_resource" "reconfigure_stack" {
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
@@ -255,7 +255,7 @@ resource "null_resource" "reconfigure_stack" {
     connection {
       type        = "ssh"
       user        = "admin"
-      private_key = file("C:/Users/dodso/Desktop/Cloud app/cloud-project-key.pem")
+      private_key = file("../cloud-project-key.pem")
       host        = aws_instance.k8s_master.public_ip
     }
   }
