@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import "./styles/Hero.css";
 
 const Hero = () => {
-  const [text] = useState("this was hacked by hecker");
+  const [text] = useState(
+    "i'm a fullstack developer. I like working on front-end of the web as well as back-end applications. I'm a passionate software developer, specializing in languages such as PHP, JavaScript, and Python, as well as frameworks like React and Laravel. I have solid experience in Git, Agile Scrum, and UML modeling.",
+  );
 
   const [description, setDescription] = useState("");
 
