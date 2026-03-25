@@ -5,6 +5,7 @@
 - name: Fetch Token from Master Node
   hosts: master
   become: yes
+  gather_facts: yes
   tasks:
     - name: Get K3s Join Token from Master
       slurp:
