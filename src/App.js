@@ -7,15 +7,21 @@ import {
   FaEnvelope,
   FaProjectDiagram,
   FaServer,
-  FaCloud,
-  FaDocker,
-  FaKubernetes,
-  FaJenkins,
-  FaTerraform,
   FaPython,
   FaJs,
   FaReact,
 } from "react-icons/fa";
+
+// These icons belong to different sets!
+import {
+  SiDocker,
+  SiKubernetes,
+  SiJenkins,
+  SiTerraform,
+  SiAnsible,
+  SiAmazonaws,
+  SiIcloud,
+} from "react-icons/si";
 import { SiAnsible, SiAmazonaws } from "react-icons/si";
 import AOS from "aos";
 import "aos/dist/aos.css";
