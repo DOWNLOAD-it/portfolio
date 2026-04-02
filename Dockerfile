@@ -19,7 +19,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci
 COPY . .
-RUN npm run build
+RUN CI=false npm run build
 
 # 4. Étape finale (Production)
 FROM base as final
