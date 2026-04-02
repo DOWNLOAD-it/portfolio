@@ -91,11 +91,11 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="hero-title">
+          {/* <h1 className="hero-title">
             Cloud Infrastructure Automation
             <br />
             <span className="highlight">& CI/CD Pipeline</span>
-          </h1>
+          </h1> */}
           <motion.div
             className="typing-container"
             initial={{ opacity: 0 }}
