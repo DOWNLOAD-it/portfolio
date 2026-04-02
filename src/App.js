@@ -1,27 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  FaGithub,
-  FaLinkedin,
-  FaEnvelope,
-  FaProjectDiagram,
-  FaServer,
-  FaPython,
-  FaJs,
-  FaReact,
-} from "react-icons/fa";
 
-// These icons belong to different sets!
-import {
-  SiAnsible,
-  SiAmazonaws,
-  SiDocker,
-  SiKubernetes,
-  SiJenkins,
-  SiTerraform,
-  SiIcloud,
-} from "react-icons/si";
+// Import FontAwesome icons
+import * as FaIcons from "react-icons/fa";
+
+// Import ALL Simple Icons as a single object to bypass export errors
+import * as SiIcons from "react-icons/si";
+
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -36,18 +22,21 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const { scrollYProgress } = useScroll();
   const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   useEffect(() => {
     document.body.className = darkMode ? "dark-mode" : "light-mode";
   }, [darkMode]);
+
+  // Helper to safely get the AWS icon regardless of version naming
+  const AwsIcon =
+    SiIcons.SiAmazonaws || SiIcons.SiAmazonwebservices || SiIcons.SiCloudflare;
 
   const projects = [
     {
       title: "Infrastructure as Code with Terraform",
       description:
         "Automated cloud resource provisioning using Terraform (HCL). Manages VPC, EC2, security groups, and load balancers across multiple environments.",
-      icon: <FaTerraform />,
+      icon: <SiIcons.SiTerraform />,
       tech: ["Terraform", "AWS", "HCL"],
       link: "#",
     },
@@ -55,7 +44,7 @@ function App() {
       title: "Configuration Management with Ansible",
       description:
         "Server configuration automation using Ansible playbooks. Handles package installation, user management, and application configuration.",
-      icon: <SiAnsible />,
+      icon: <SiIcons.SiAnsible />,
       tech: ["Ansible", "YAML", "Linux"],
       link: "#",
     },
@@ -63,7 +52,7 @@ function App() {
       title: "Containerization & Orchestration",
       description:
         "Multi-stage Docker builds for optimized images, plus Kubernetes manifests for deployment, scaling, and service discovery.",
-      icon: <FaDocker />,
+      icon: <SiIcons.SiDocker />,
       tech: ["Docker", "Kubernetes", "Container Registry"],
       link: "#",
     },
@@ -71,21 +60,21 @@ function App() {
       title: "CI/CD Pipeline with Jenkins",
       description:
         "Fully automated Jenkins pipeline with stages: code checkout, build, test, Docker image creation, and deployment to Kubernetes.",
-      icon: <FaJenkins />,
+      icon: <SiIcons.SiJenkins />,
       tech: ["Jenkins", "Groovy", "GitHub Webhooks"],
       link: "#",
     },
   ];
 
   const skills = [
-    { name: "Terraform", icon: <FaTerraform />, level: 90 },
-    { name: "Ansible", icon: <SiAnsible />, level: 85 },
-    { name: "Docker", icon: <FaDocker />, level: 88 },
-    { name: "Kubernetes", icon: <FaKubernetes />, level: 82 },
-    { name: "Jenkins", icon: <FaJenkins />, level: 85 },
-    { name: "AWS", icon: <SiAmazonaws />, level: 80 },
-    { name: "Python", icon: <FaPython />, level: 75 },
-    { name: "JavaScript/React", icon: <FaReact />, level: 85 },
+    { name: "Terraform", icon: <SiIcons.SiTerraform />, level: 90 },
+    { name: "Ansible", icon: <SiIcons.SiAnsible />, level: 85 },
+    { name: "Docker", icon: <SiIcons.SiDocker />, level: 88 },
+    { name: "Kubernetes", icon: <SiIcons.SiKubernetes />, level: 82 },
+    { name: "Jenkins", icon: <SiIcons.SiJenkins />, level: 85 },
+    { name: "AWS", icon: <AwsIcon />, level: 80 },
+    { name: "Python", icon: <FaIcons.FaPython />, level: 75 },
+    { name: "JavaScript/React", icon: <FaIcons.FaReact />, level: 85 },
   ];
 
   return (
@@ -152,7 +141,7 @@ function App() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaGithub /> GitHub Repository
+              <FaIcons.FaGithub /> GitHub Repository
             </a>
           </div>
         </motion.div>
@@ -161,13 +150,6 @@ function App() {
       <section id="projects" className="projects">
         <div className="container">
           <h2 data-aos="fade-up">Featured Projects</h2>
-          <p
-            data-aos="fade-up"
-            data-aos-delay="100"
-            className="section-subtitle"
-          >
-            End-to-end DevOps implementations
-          </p>
           <div className="projects-grid">
             {projects.map((project, index) => (
               <motion.div
@@ -176,7 +158,6 @@ function App() {
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
                 whileHover={{ y: -10 }}
-                transition={{ type: "spring", stiffness: 300 }}
               >
                 <div className="project-icon">{project.icon}</div>
                 <h3>{project.title}</h3>
@@ -200,13 +181,6 @@ function App() {
       <section id="skills" className="skills">
         <div className="container">
           <h2 data-aos="fade-up">Tech Stack & Skills</h2>
-          <p
-            data-aos="fade-up"
-            data-aos-delay="100"
-            className="section-subtitle"
-          >
-            Tools and technologies I work with
-          </p>
           <div className="skills-grid">
             {skills.map((skill, index) => (
               <motion.div
@@ -223,7 +197,7 @@ function App() {
                     className="skill-progress"
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
-                    transition={{ duration: 1, delay: 0.2 }}
+                    transition={{ duration: 1 }}
                   />
                 </div>
                 <span className="skill-percent">{skill.level}%</span>
@@ -234,51 +208,32 @@ function App() {
       </section>
 
       <section id="contact" className="contact">
-        <div className="container">
+        <div className="container text-center">
           <h2 data-aos="fade-up">Let's Connect</h2>
-          <p
-            data-aos="fade-up"
-            data-aos-delay="100"
-            className="section-subtitle"
-          >
-            Feel free to reach out for collaborations or opportunities
-          </p>
-          <div
-            className="contact-links"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            <a
-              href="https://github.com/DOWNLOAD-it"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-item"
-            >
-              <FaGithub /> GitHub
+          <div className="contact-links">
+            <a href="https://github.com/DOWNLOAD-it" className="contact-item">
+              <FaIcons.FaGithub /> GitHub
             </a>
             <a href="mailto:your.email@example.com" className="contact-item">
-              <FaEnvelope /> Email
+              <FaIcons.FaEnvelope /> Email
             </a>
             <a
               href="https://linkedin.com/in/yourprofile"
-              target="_blank"
-              rel="noopener noreferrer"
               className="contact-item"
             >
-              <FaLinkedin /> LinkedIn
+              <FaIcons.FaLinkedin /> LinkedIn
             </a>
           </div>
         </div>
       </section>
 
       <footer className="footer">
-        <p>© 2024 DevOps Portfolio - Built with React, Framer Motion & AOS</p>
+        <p>© 2026 DevOps Portfolio - Built with React & Jenkins</p>
       </footer>
     </div>
   );
 }
 
-// Typing Text Component
 const TypingText = ({ texts }) => {
   const [currentText, setCurrentText] = useState("");
   const [index, setIndex] = useState(0);
@@ -291,20 +246,17 @@ const TypingText = ({ texts }) => {
       setTimeout(() => setReverse(false), 2000);
       return;
     }
-
     if (reverse && subIndex === 0) {
       setReverse(false);
       setIndex((prev) => (prev + 1) % texts.length);
       return;
     }
-
     const timeout = setTimeout(
       () => {
         setSubIndex((prev) => prev + (reverse ? -1 : 1));
       },
       reverse ? 50 : 100,
     );
-
     return () => clearTimeout(timeout);
   }, [subIndex, index, reverse, texts]);
 
