@@ -19,9 +19,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci
 COPY . .
-# Add this line before your build command
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN CI=false npm run build
+RUN npm run build
 
 # 4. Étape finale (Production)
 FROM base as final
@@ -34,5 +32,3 @@ COPY --from=build /usr/src/app/build ./build
 # Exposition du port 3000 et lancement de l'application
 EXPOSE 3000
 CMD npx serve -s build -l 3000
-
-#fix
