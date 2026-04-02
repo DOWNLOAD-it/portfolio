@@ -34,3 +34,5 @@ COPY --from=build /usr/src/app/build ./build
 # Exposition du port 3000 et lancement de l'application
 EXPOSE 3000
 CMD npx serve -s build -l 3000
+
+#fix
