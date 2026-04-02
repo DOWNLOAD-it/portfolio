@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 ARG NODE_VERSION=20.12.1
 
-# 1. Image de base
-FROM node:${NODE_VERSION}-alpine as base
+# 1. Image de base (Switched to slim to ensure build tools are available)
+FROM node:${NODE_VERSION}-slim as base
 WORKDIR /usr/src/app
 
-# 2. Étape des dépendances (optimisée avec le cache Docker)
+# 2. Étape des dépendances (Production only)
 FROM base as deps
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
@@ -23,12 +23,17 @@ RUN npm run build
 
 # 4. Étape finale (Production)
 FROM base as final
-ENV NODE_ENV production
-USER node
-COPY package.json .
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/build ./build
+ENV NODE_ENV=production
 
-# Exposition du port 3000 et lancement de l'application
+# Copy files and explicitly grant ownership to the non-root 'node' user
+COPY --chown=node:node package.json .
+COPY --chown=node:node --from=deps /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/build ./build
+
+# Switch to the non-root user for execution
+USER node
+
 EXPOSE 3000
-CMD npx serve -s build -l 3000
+
+# Exec form CMD allows proper handling of shutdown signals (SIGTERM)
+CMD ["npx", "serve", "-s", "build", "-l", "3000"]
