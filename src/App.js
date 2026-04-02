@@ -14,12 +14,12 @@ import {
 
 // These icons belong to different sets!
 import {
+  SiAnsible,
+  SiAmazonaws,
   SiDocker,
   SiKubernetes,
   SiJenkins,
   SiTerraform,
-  SiAnsible,
-  SiAmazonaws,
   SiIcloud,
 } from "react-icons/si";
 import { SiAnsible, SiAmazonaws } from "react-icons/si";
