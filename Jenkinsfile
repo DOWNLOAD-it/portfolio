@@ -55,16 +55,14 @@ pipeline {
                 }
             }
         }
-
-        stage('Cleanup') {
-            steps {
-                echo "Cleaning up local Docker layers to prevent 98% disk usage..."
-                sh "docker image prune -f"
-            }
-        }
     }
 
     post {
+        always {
+            echo "Always running cleanup to prevent disk exhaustion..."
+            // Cleans up dangling images. Use 'docker system prune -f' if you need deeper cleaning.
+            sh "docker image prune -f"
+        }
         success {
             echo "Successfully deployed! Access your portfolio on Port 30080 of your Worker IP."
         }
