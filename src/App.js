@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { motion, useScroll, useTransform } from "framer-motion";
-
-// Import FontAwesome icons
-import * as FaIcons from "react-icons/fa";
-
-// Import ALL Simple Icons as a single object to bypass export errors
-import * as SiIcons from "react-icons/si";
-
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -27,54 +20,46 @@ function App() {
     document.body.className = darkMode ? "dark-mode" : "light-mode";
   }, [darkMode]);
 
-  // Helper to safely get the AWS icon regardless of version naming
-  const AwsIcon =
-    SiIcons.SiAmazonaws || SiIcons.SiAmazonwebservices || SiIcons.SiCloudflare;
-
   const projects = [
     {
       title: "Infrastructure as Code with Terraform",
       description:
         "Automated cloud resource provisioning using Terraform (HCL). Manages VPC, EC2, security groups, and load balancers across multiple environments.",
-      icon: <SiIcons.SiTerraform />,
+      icon: "🏗️",
       tech: ["Terraform", "AWS", "HCL"],
-      link: "#",
     },
     {
       title: "Configuration Management with Ansible",
       description:
         "Server configuration automation using Ansible playbooks. Handles package installation, user management, and application configuration.",
-      icon: <SiIcons.SiAnsible />,
+      icon: "⚙️",
       tech: ["Ansible", "YAML", "Linux"],
-      link: "#",
     },
     {
       title: "Containerization & Orchestration",
       description:
         "Multi-stage Docker builds for optimized images, plus Kubernetes manifests for deployment, scaling, and service discovery.",
-      icon: <SiIcons.SiDocker />,
+      icon: "🐳",
       tech: ["Docker", "Kubernetes", "Container Registry"],
-      link: "#",
     },
     {
       title: "CI/CD Pipeline with Jenkins",
       description:
         "Fully automated Jenkins pipeline with stages: code checkout, build, test, Docker image creation, and deployment to Kubernetes.",
-      icon: <SiIcons.SiJenkins />,
+      icon: "🔄",
       tech: ["Jenkins", "Groovy", "GitHub Webhooks"],
-      link: "#",
     },
   ];
 
   const skills = [
-    { name: "Terraform", icon: <SiIcons.SiTerraform />, level: 90 },
-    { name: "Ansible", icon: <SiIcons.SiAnsible />, level: 85 },
-    { name: "Docker", icon: <SiIcons.SiDocker />, level: 88 },
-    { name: "Kubernetes", icon: <SiIcons.SiKubernetes />, level: 82 },
-    { name: "Jenkins", icon: <SiIcons.SiJenkins />, level: 85 },
-    { name: "AWS", icon: <AwsIcon />, level: 80 },
-    { name: "Python", icon: <FaIcons.FaPython />, level: 75 },
-    { name: "JavaScript/React", icon: <FaIcons.FaReact />, level: 85 },
+    { name: "Terraform", level: 90, icon: "🏗️" },
+    { name: "Ansible", level: 85, icon: "⚙️" },
+    { name: "Docker", level: 88, icon: "🐳" },
+    { name: "Kubernetes", level: 82, icon: "☸️" },
+    { name: "Jenkins", level: 85, icon: "🔄" },
+    { name: "AWS", level: 80, icon: "☁️" },
+    { name: "Python", level: 75, icon: "🐍" },
+    { name: "JavaScript/React", level: 85, icon: "⚛️" },
   ];
 
   return (
@@ -141,7 +126,7 @@ function App() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaIcons.FaGithub /> GitHub Repository
+              📦 GitHub Repository
             </a>
           </div>
         </motion.div>
@@ -150,6 +135,13 @@ function App() {
       <section id="projects" className="projects">
         <div className="container">
           <h2 data-aos="fade-up">Featured Projects</h2>
+          <p
+            data-aos="fade-up"
+            data-aos-delay="100"
+            className="section-subtitle"
+          >
+            End-to-end DevOps implementations
+          </p>
           <div className="projects-grid">
             {projects.map((project, index) => (
               <motion.div
@@ -158,6 +150,7 @@ function App() {
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
                 whileHover={{ y: -10 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
                 <div className="project-icon">{project.icon}</div>
                 <h3>{project.title}</h3>
@@ -169,7 +162,7 @@ function App() {
                     </span>
                   ))}
                 </div>
-                <a href={project.link} className="project-link">
+                <a href="#" className="project-link">
                   Learn More →
                 </a>
               </motion.div>
@@ -181,6 +174,13 @@ function App() {
       <section id="skills" className="skills">
         <div className="container">
           <h2 data-aos="fade-up">Tech Stack & Skills</h2>
+          <p
+            data-aos="fade-up"
+            data-aos-delay="100"
+            className="section-subtitle"
+          >
+            Tools and technologies I work with
+          </p>
           <div className="skills-grid">
             {skills.map((skill, index) => (
               <motion.div
@@ -197,7 +197,7 @@ function App() {
                     className="skill-progress"
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
-                    transition={{ duration: 1 }}
+                    transition={{ duration: 1, delay: 0.2 }}
                   />
                 </div>
                 <span className="skill-percent">{skill.level}%</span>
@@ -208,32 +208,51 @@ function App() {
       </section>
 
       <section id="contact" className="contact">
-        <div className="container text-center">
+        <div className="container">
           <h2 data-aos="fade-up">Let's Connect</h2>
-          <div className="contact-links">
-            <a href="https://github.com/DOWNLOAD-it" className="contact-item">
-              <FaIcons.FaGithub /> GitHub
+          <p
+            data-aos="fade-up"
+            data-aos-delay="100"
+            className="section-subtitle"
+          >
+            Feel free to reach out for collaborations or opportunities
+          </p>
+          <div
+            className="contact-links"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <a
+              href="https://github.com/DOWNLOAD-it"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-item"
+            >
+              📦 GitHub
             </a>
             <a href="mailto:your.email@example.com" className="contact-item">
-              <FaIcons.FaEnvelope /> Email
+              ✉️ Email
             </a>
             <a
               href="https://linkedin.com/in/yourprofile"
+              target="_blank"
+              rel="noopener noreferrer"
               className="contact-item"
             >
-              <FaIcons.FaLinkedin /> LinkedIn
+              🔗 LinkedIn
             </a>
           </div>
         </div>
       </section>
 
       <footer className="footer">
-        <p>© 2026 DevOps Portfolio - Built with React & Jenkins</p>
+        <p>© 2024 DevOps Portfolio - Built with React, Framer Motion & AOS</p>
       </footer>
     </div>
   );
 }
 
+// Typing Text Component
 const TypingText = ({ texts }) => {
   const [currentText, setCurrentText] = useState("");
   const [index, setIndex] = useState(0);
@@ -246,17 +265,20 @@ const TypingText = ({ texts }) => {
       setTimeout(() => setReverse(false), 2000);
       return;
     }
+
     if (reverse && subIndex === 0) {
       setReverse(false);
       setIndex((prev) => (prev + 1) % texts.length);
       return;
     }
+
     const timeout = setTimeout(
       () => {
         setSubIndex((prev) => prev + (reverse ? -1 : 1));
       },
       reverse ? 50 : 100,
     );
+
     return () => clearTimeout(timeout);
   }, [subIndex, index, reverse, texts]);
 
