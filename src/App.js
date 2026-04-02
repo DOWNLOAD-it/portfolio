@@ -22,7 +22,6 @@ import {
   SiTerraform,
   SiIcloud,
 } from "react-icons/si";
-import { SiAnsible, SiAmazonaws } from "react-icons/si";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
